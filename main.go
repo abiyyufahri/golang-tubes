@@ -65,6 +65,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.choices = []string{"Tambah Pelanggan", "Detail Pelanggan", "Hapus Detail Pelanggan", "Kembali"}
 			}
 
+			if pilihan == "Tambah Ekspedisi" {
+				m.choices = []string{"Tambah Pelanggan", "Detail Pelanggan", "Hapus Detail Pelanggan", "Kembali"}
+			}
+
 			if pilihan == "Kembali" && (m.current == "Modul Ekspedisi" || m.current == "Modul Pelanggan") {
 				m.choices = []string{"Modul Ekspedisi", "Modul Pelanggan"}
 			}
