@@ -2,84 +2,116 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/gdamore/tcell/v2"
-	"github.com/rivo/tview"
+	tea "github.com/charmbracelet/bubbletea"
+	"os"
 )
 
-var (
-	app  *tview.Application
-	flex *tview.Flex
-	menu *tview.List
-)
+type model struct {
+	choices []string // items on the to-do list
+	cursor  int      // which to-do list item our cursor is pointing at
+	current string
+}
 
-func main() {
-	// Create a new application
-	app = tview.NewApplication()
-
-	// Create a new flex layout
-	flex = tview.NewFlex().SetDirection(tview.FlexRow)
-
-	// Add a title to the menu
-	title := tview.NewTextView().
-		SetText("Welcome to My App").
-		SetTextAlign(tview.AlignCenter).
-		SetTextColor(tview.Styles.TitleColor)
-
-	// Create a list of menu items
-	menu = tview.NewList().
-		AddItem("Option 1", "", '1', func() {
-			// Upon selecting Option 1, display a table with video learning data
-			showVideoLearningData()
-		}).
-		AddItem("Option 2", "", '2', nil).
-		AddItem("Option 3", "", '3', nil).
-		AddItem("Exit", "", 'q', func() {
-			app.Stop()
-		})
-
-	// Add the title and menu to the flex layout
-	flex.AddItem(title, 0, 1, false).
-		AddItem(menu, 0, 2, true)
-
-	// Set the root layout for the application
-	if err := app.SetRoot(flex, true).Run(); err != nil {
-		panic(err)
+func initialModel() model {
+	return model{
+		// Our to-do list is a grocery list
+		choices: []string{"Modul Ekspedisi", "Modul Pelanggan"},
 	}
 }
 
-// Function to show video learning data
-func showVideoLearningData() {
-	// Create a new table
-	table := tview.NewTable().
-		SetBorders(true).
-		SetSelectable(true, false) // Make the table rows selectable but not the columns
+func (m model) Init() tea.Cmd {
+	// Just return `nil`, which means "no I/O right now, please."
+	return nil
+}
 
-	// Add table rows (for demonstration purposes)
-	table.SetCell(0, 0, tview.NewTableCell("Video Title").SetAlign(tview.AlignCenter).SetTextColor(tview.Styles.SecondaryTextColor))
-	table.SetCell(0, 1, tview.NewTableCell("Duration").SetAlign(tview.AlignCenter).SetTextColor(tview.Styles.SecondaryTextColor))
-	table.SetCell(1, 0, tview.NewTableCell("Introduction to Go").SetAlign(tview.AlignCenter))
-	table.SetCell(1, 1, tview.NewTableCell("30 minutes").SetAlign(tview.AlignCenter))
-	table.SetCell(2, 0, tview.NewTableCell("Advanced Topics in Go").SetAlign(tview.AlignCenter))
-	table.SetCell(2, 1, tview.NewTableCell("45 minutes").SetAlign(tview.AlignCenter))
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
 
-	// Handle table selection
-	table.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		// Get the currently selected row and column
-		row, column := table.GetSelection()
-		if event.Key() == tcell.KeyEnter {
-			// Handle the Enter key
-			cell := table.GetCell(row, column)
-			// Display the selected cell's text
-			app.SetRoot(tview.NewTextView().SetText(fmt.Sprintf("You selected: %s", cell.Text)), true)
+	// Is it a key press?
+	case tea.KeyMsg:
+
+		// Cool, what was the actual key pressed?
+		switch msg.String() {
+
+		// These keys should exit the program.
+		case "ctrl+c", "q":
+			fmt.Println("Terimakasih, sampai jumpa lagi")
+			fmt.Println(m.current)
+			return m, tea.Quit
+
+		// The "up" and "k" keys move the cursor up
+		case "up", "k":
+			if m.cursor > 0 {
+				m.cursor--
+			}
+
+		// The "down" and "j" keys move the cursor down
+		case "down", "j":
+			if m.cursor < len(m.choices)-1 {
+				m.cursor++
+			}
+
+		// The "enter" key and the spacebar (a literal space) toggle
+		// the selected state for the item that the cursor is pointing at.
+		case "enter", " ":
+			pilihan := m.choices[m.cursor]
+			m.choices = nil
+
+			fmt.Print(m.current)
+			if pilihan == "Modul Ekspedisi" {
+				m.choices = []string{"Tambah Ekspedisi", "Lihat Status", "Update Status", "Edit Ekpedisi",
+					"Hapus Ekspedisi", "Kembali"}
+			} else if pilihan == "Modul Pelanggan" {
+				m.choices = []string{"Tambah Pelanggan", "Detail Pelanggan", "Hapus Detail Pelanggan", "Kembali"}
+			}
+
+			if pilihan == "Kembali" && (m.current == "Modul Ekspedisi" || m.current == "Modul Pelanggan") {
+				m.choices = []string{"Modul Ekspedisi", "Modul Pelanggan"}
+			}
+			m.cursor = 0
+			m.current = pilihan
 		}
-		return event
-	})
+	}
 
-	// Clear the flex layout and add the table
-	flex.Clear()
-	flex.AddItem(table, 0, 1, true)
+	// Return the updated model to the Bubble Tea runtime for processing.
+	// Note that we're not returning a command.
+	return m, nil
+}
 
-	// Refresh the application's root
-	app.SetRoot(flex, true).SetFocus(table)
+func (m model) View() string {
+	// The header
+	s := "What should we buy at the market?\n\n"
+
+	// Iterate over our choices
+	for i, choice := range m.choices {
+
+		// Is the cursor pointing at this choice?
+		cursor := " " // no cursor
+		if m.cursor == i {
+			cursor = ">" // cursor!
+		}
+
+		// Is this choice selected?
+		//checked := " " // not selected
+		//if _, ok := m.selected[i]; ok {
+		//	checked = "x" // selected!
+		//}
+
+		// Render the row
+		s += fmt.Sprintf("%s %s\n", cursor, choice)
+	}
+
+	// The footer
+	s += "\nPress q to quit.\n"
+
+	// Send the UI for rendering
+	return s
+}
+
+func main() {
+	p := tea.NewProgram(initialModel())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
+	}
 }
