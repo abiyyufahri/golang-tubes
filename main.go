@@ -1,139 +1,135 @@
 package main
 
-import (
-	"fmt"
-	"os"
-	"os/exec"
-
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-)
-
-type model struct {
-	choices []string // items on the to-do list
-	cursor  int      // which to-do list item our cursor is pointing at
-	current string
-	width   int
-	height  int
-}
-
-func initialModel() model {
-	return model{
-		// Our to-do list is a grocery list
-		choices: []string{"Modul Ekspedisi", "Modul Pelanggan"},
-	}
-}
-
-func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
-	return nil
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		m.width = msg.Width
-		m.height = msg.Height
-
-	// Is it a key press?
-	case tea.KeyMsg:
-
-		// Cool, what was the actual key pressed?
-		switch msg.String() {
-
-		// These keys should exit the program.
-		case "ctrl+c", "q":
-			fmt.Println("Terimakasih, sampai jumpa lagi")
-			return m, tea.Quit
-
-		// The "up" and "k" keys move the cursor up
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-
-		// The "down" and "j" keys move the cursor down
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			pilihan := m.choices[m.cursor]
-			m.choices = nil
-
-			fmt.Print(m.current)
-			if pilihan == "Modul Ekspedisi" {
-				m.choices = []string{"Tambah Ekspedisi", "Lihat Status", "Update Status", "Edit Ekpedisi",
-					"Hapus Ekspedisi", "Kembali"}
-			} else if pilihan == "Modul Pelanggan" {
-				m.choices = []string{"Tambah Pelanggan", "Detail Pelanggan", "Hapus Detail Pelanggan", "Kembali"}
-			}
-
-			if pilihan == "Kembali" && (m.current == "Modul Ekspedisi" || m.current == "Modul Pelanggan") {
-				m.choices = []string{"Modul Ekspedisi", "Modul Pelanggan"}
-			}
-			m.cursor = 0
-			m.current = pilihan
-		}
-	}
-
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
-	return m, nil
-}
-
-func (m model) View() string {
-	// The header
-	cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("205")).Bold(true)
-	lineStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	lineStyleText := lipgloss.NewStyle().Foreground(lipgloss.Color("#fff"))
-
-	s := "What should we buy at the market?\n\n"
-
-	// Iterate over our choices
-	for i, choice := range m.choices {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		lineStyleText = lipgloss.NewStyle().Foreground(lipgloss.Color("#fff"))
-		if m.cursor == i {
-			cursor = ">" // cursor!
-			lineStyle = cursorStyle
-			lineStyleText = lineStyle
-		}
-
-		// Is this choice selected?
-		//checked := " " // not selected
-		//if _, ok := m.selected[i]; ok {
-		//	checked = "x" // selected!
-		//}
-
-		// Render the row
-		s += fmt.Sprintf("%s %s\n", lineStyle.Render(cursor), lineStyleText.Render(choice))
-	}
-
-	// The footer
-	s += "\nPress q to quit.\n"
-
-	// Send the UI for rendering
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, s)
-}
+import "fmt"
 
 func main() {
-	clearScreen()
+	var opsi int
+	opsi = menuPage()
 
-	p := tea.NewProgram(initialModel())
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
+	switch opsi {
+	case 1:
+		menuPelanggan()
+	case 2:
+		menuEkspedisi()
 	}
+
 }
 
-func clearScreen() {
-	cmd := exec.Command("clear") // Unix-like: "clear", Windows: "cmd" with "/c" and "cls"
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+func menuPage() int {
+	var opsi int
+	fmt.Println("Pelanggan (1), Ekspedisi (2): ")
+	fmt.Scan(&opsi)
+	return opsi
+}
+
+func menuPelanggan() {
+	var opsi int
+	fmt.Println("Tambah,Detail,Hapus,Kembali (1/2/3/4): ")
+	fmt.Scan(&opsi)
+	switch opsi {
+	case 1:
+		addPelanggan()
+	case 2:
+		detailPelanggan()
+	case 3:
+
+	case 4:
+
+	}
+
+}
+
+func addPelanggan() {
+	var nama, alamat, nomorTelepon, alamatEmail string
+
+	for nama != "0" {
+		fmt.Scan(&nama, &alamat, &nomorTelepon, &alamatEmail)
+		if nama == "0" {
+			break
+		}
+		CreatePelanggan(nama, alamat, nomorTelepon, alamatEmail)
+	}
+	fmt.Println("Data yang ditambahkan : ")
+
+	// Menampilkan semua pelanggan yang telah ditambahkan
+	for i := 0; i < nP; i++ {
+		pelanggan := ReadAllPelanggan()
+		fmt.Printf("Pelanggan %d: %v\n", i+1, pelanggan[i])
+	}
+
+	menuPelanggan()
+}
+
+func detailPelanggan() {
+	fmt.Println("Data Pelanggan : ")
+	var iPelanggan int
+	// Menampilkan semua pelanggan yang telah ditambahkan
+	for i := 0; i < nP; i++ {
+		pelanggan := ReadAllPelanggan()
+		fmt.Printf("Pelanggan %d: %v\n", i+1, pelanggan[i])
+	}
+
+	fmt.Print("Detail, Update, Delete Pelanggan (1/2/3) ")
+	fmt.Scan(&iPelanggan)
+
+	if iPelanggan == 1 {
+		fmt.Print("lihat detail pelanggan (index) (kembali : -1): ")
+		fmt.Scan(&iPelanggan)
+
+		if iPelanggan == -1 {
+			menuPelanggan()
+		}
+		fmt.Println()
+		for i := 0; i < nP; i++ {
+			pelanggan := ReadAllPelanggan()
+			if iPelanggan-1 == i {
+				fmt.Println("Detail Pelanggan", i+1, ":")
+				fmt.Println("Nama  :", pelanggan[i].nama)
+				fmt.Println("Alamat:", pelanggan[i].alamat)
+				fmt.Println("Telp  :", pelanggan[i].nomorTelepon)
+				fmt.Println("Email :", pelanggan[i].alamatEmail)
+				break
+			} else {
+				continue
+			}
+		}
+	} else if iPelanggan == 2 {
+		var nama, alamat, nomorTelepon, alamatEmail string
+		var id int
+		fmt.Print("ID Pelanggan : ")
+		fmt.Scan(&id)
+		fmt.Println()
+		fmt.Print("Update (nama,alamat,nomorTelp,Email): ")
+		fmt.Scan(&nama, &alamat, &nomorTelepon, &alamatEmail)
+		UpdatePelanggan(id, nama, alamat, nomorTelepon, alamatEmail)
+	} else if iPelanggan == 3 {
+		var id int
+		fmt.Print("ID Pelanggan : ")
+		fmt.Scan(&id)
+		fmt.Println()
+		DeletePelanggan(id)
+		fmt.Println("Pelanggan berhasil dihapus")
+		fmt.Println()
+	}
+
+	fmt.Println()
+	detailPelanggan()
+}
+
+func menuEkspedisi() {
+	var opsi int
+	fmt.Println("Lihat status,update status,Edit Ekspedisi,Hapus Ekspedisi,Kembali (1/2/3/4/5): ")
+	fmt.Scan(&opsi)
+	switch opsi {
+	case 1:
+
+	case 2:
+
+	case 3:
+
+	case 4:
+
+	case 5:
+
+	}
 }
