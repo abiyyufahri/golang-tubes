@@ -1,6 +1,6 @@
 package pelanggan
 
-const NMAX_PELANGGAN int = 20
+const NMAXPELANGGAN int = 20
 
 type Pelanggan struct {
 	id           int
@@ -11,7 +11,7 @@ type Pelanggan struct {
 	status       bool
 }
 
-type tabPelanggan [NMAX_PELANGGAN]Pelanggan
+type tabPelanggan [NMAXPELANGGAN]Pelanggan
 
 type ModelPelanggan struct {
 	daftarPelanggan tabPelanggan
@@ -23,7 +23,7 @@ func (p *ModelPelanggan) Create() bool {
 		Membuat data pelanggan baru, return false bila data telah penuh
 	*/
 
-	if p.nPelanggan < NMAX_PELANGGAN {
+	if p.nPelanggan < NMAXPELANGGAN {
 
 		var i = p.nPelanggan
 
@@ -37,14 +37,14 @@ func (p *ModelPelanggan) Create() bool {
 	return false // data pelanggan telah penuh
 }
 
-func (p ModelPelanggan) ReadAll() {
+func (p *ModelPelanggan) ReadAll() {
 	/*
 		Mengembalikan daftar pelanggan dan jumlah pelanggan nya
 	*/
-	viewAllTable(p)
+	viewAllTable(*p)
 }
 
-func (p ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
+func (p *ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
 	/*
 		Memperbarui data pelanggan, return false jika data tidak ditemukan
 	*/
@@ -71,7 +71,7 @@ func (p ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail s
 	return false // gagal
 }
 
-func (p ModelPelanggan) UpdateStatus(id int, status bool) bool {
+func (p *ModelPelanggan) UpdateStatus(id int, status bool) bool {
 	/*
 		Memperbarui status, return false jika data tidak ditemukan
 	*/
@@ -88,7 +88,7 @@ func (p ModelPelanggan) UpdateStatus(id int, status bool) bool {
 
 }
 
-func (p ModelPelanggan) Search(id int) int {
+func (p *ModelPelanggan) Search(id int) int {
 	/*
 		Mengembalikan index dari id pelanggan, atau -1 bila tidak ditemukan
 		Note: Pencarian menggunakan binary search
@@ -111,7 +111,7 @@ func (p ModelPelanggan) Search(id int) int {
 	return -1 // jika tidak ditemukan
 }
 
-func (p ModelPelanggan) Delete(id int) bool {
+func (p *ModelPelanggan) Delete(id int) bool {
 	/*
 		Menghapus data berdasarkan id, return false bila id tidak ditemukan
 	*/

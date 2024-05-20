@@ -85,7 +85,7 @@ func viewAllTable(dp ModelPelanggan) {
 	}
 }
 
-func (p ModelPelanggan) ToTableRow() []table.Row {
+func (p *ModelPelanggan) ToTableRow() []table.Row {
 	var rows []table.Row
 	var pelanggan Pelanggan
 
