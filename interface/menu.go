@@ -34,8 +34,7 @@ func (m modelChoiceModule) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 
 		// These keys should exit the program.
-		case "ctrl+c", "q":
-			fmt.Println("Terimakasih, sampai jumpa lagi")
+		case "q":
 			m.choosen = -1
 			return m, tea.Quit
 
@@ -55,7 +54,7 @@ func (m modelChoiceModule) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m modelChoiceModule) View() string {
 	// The header
-	s := "\nSilakan Pilih Modul yang ingin diakses \n\n"
+	s := "\n\nSilakan Pilih Modul yang ingin diakses \n\n"
 
 	// Iterate over our choices
 	for i := 0; i < 2; i++ {
