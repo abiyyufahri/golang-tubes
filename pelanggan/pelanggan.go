@@ -11,11 +11,6 @@ type Pelanggan struct {
 	status       bool
 }
 
-const (
-	aktif = iota
-	nonaktif
-)
-
 type tabPelanggan [NMAX_PELANGGAN]Pelanggan
 
 type ModelPelanggan struct {
