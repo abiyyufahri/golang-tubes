@@ -20,6 +20,7 @@ func initialModelMenuPelanggan() modelMenuPelanggan {
 			"Tambah Pelanggan",
 			"Lihat Daftar Pelanggan",
 			"Lihat Detail Pelanggan",
+			"Ubah Status Pelanggan",
 			"Ubah Data Pelanggan",
 			"Hapus Pelanggan",
 		},
@@ -45,7 +46,7 @@ func (m modelMenuPelanggan) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.choosen = 0
 			return m, tea.Quit
 
-		case "1", "2", "3", "4", "5": // jika pilihan nya 1 atau 2 atau seterusnya
+		case "1", "2", "3", "4", "5", "6": // jika pilihan nya 1 atau 2 atau seterusnya
 			m.choosen, _ = strconv.Atoi(msg.String())
 			return m, tea.Quit
 		}

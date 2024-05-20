@@ -1,4 +1,4 @@
-package main
+package pelanggan
 
 const NMAX_PELANGGAN int = 20
 
@@ -13,12 +13,12 @@ type Pelanggan struct {
 
 type tabPelanggan [NMAX_PELANGGAN]Pelanggan
 
-type modelPelanggan struct {
+type ModelPelanggan struct {
 	daftarPelanggan tabPelanggan
 	nPelanggan      int
 }
 
-func (p modelPelanggan) Create(nama, alamat, nomorTelepon, alamatEmail string, status bool) bool {
+func (p ModelPelanggan) Create(nama, alamat, nomorTelepon, alamatEmail string, status bool) bool {
 	/*
 		Membuat data pelanggan baru, return false bila data telah penuh
 	*/
@@ -33,14 +33,14 @@ func (p modelPelanggan) Create(nama, alamat, nomorTelepon, alamatEmail string, s
 	return false // data pelanggan telah penuh
 }
 
-func (p modelPelanggan) ReadAll() (tabPelanggan, int) {
+func (p ModelPelanggan) ReadAll() (tabPelanggan, int) {
 	/*
 		Mengembalikan daftar pelanggan dan jumlah pelanggan nya
 	*/
 	return p.daftarPelanggan, p.nPelanggan
 }
 
-func (p modelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
+func (p ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
 	/*
 		Memperbarui data pelanggan, return false jika data tidak ditemukan
 	*/
@@ -67,7 +67,7 @@ func (p modelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail s
 	return false // gagal
 }
 
-func (p modelPelanggan) UpdateStatus(id int, status bool) bool {
+func (p ModelPelanggan) UpdateStatus(id int, status bool) bool {
 	/*
 		Memperbarui status, return false jika data tidak ditemukan
 	*/
@@ -84,7 +84,7 @@ func (p modelPelanggan) UpdateStatus(id int, status bool) bool {
 
 }
 
-func (p modelPelanggan) Search(id int) int {
+func (p ModelPelanggan) Search(id int) int {
 	/*
 		Mengembalikan index dari id pelanggan, atau -1 bila tidak ditemukan
 		Note: Pencarian menggunakan binary search
@@ -107,7 +107,7 @@ func (p modelPelanggan) Search(id int) int {
 	return -1 // jika tidak ditemukan
 }
 
-func (p modelPelanggan) Delete(id int) bool {
+func (p ModelPelanggan) Delete(id int) bool {
 	/*
 		Menghapus data berdasarkan id, return false bila id tidak ditemukan
 	*/

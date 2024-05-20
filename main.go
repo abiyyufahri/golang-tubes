@@ -2,11 +2,12 @@ package main
 
 import (
 	"tubes/interface"
+	p "tubes/pelanggan"
 )
 
-const NMAX int = 20
-
 func main() {
+
+	var dataPelanggan p.ModelPelanggan
 
 	var pilihan int
 	pilihan = _interface.GetModuleChoice()
@@ -15,7 +16,7 @@ func main() {
 		case 1:
 			subMenuEkspedisi()
 		case 2:
-			subMenuPelanggan()
+			subMenuPelanggan(&dataPelanggan)
 		}
 
 		pilihan = _interface.GetModuleChoice()
@@ -24,7 +25,7 @@ func main() {
 	quit()
 }
 
-func subMenuPelanggan() {
+func subMenuPelanggan(dp *p.ModelPelanggan) {
 	var subPilihan int
 	subPilihan = _interface.GetModulSubMenuPelanggan()
 	for subPilihan != 0 {
