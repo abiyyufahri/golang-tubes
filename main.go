@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"tubes/interface"
 	p "tubes/pelanggan"
 )
@@ -29,6 +30,14 @@ func subMenuPelanggan(dp *p.ModelPelanggan) {
 	var subPilihan int
 	subPilihan = _interface.GetModulSubMenuPelanggan()
 	for subPilihan != 0 {
+
+		switch subPilihan {
+		case 1:
+			dp.Create()
+		case 2:
+			dpp, n := dp.ReadAll()
+			fmt.Println(dpp, n)
+		}
 
 		subPilihan = _interface.GetModulSubMenuPelanggan()
 	}

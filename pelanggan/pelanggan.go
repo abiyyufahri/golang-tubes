@@ -11,6 +11,11 @@ type Pelanggan struct {
 	status       bool
 }
 
+const (
+	aktif = iota
+	nonaktif
+)
+
 type tabPelanggan [NMAX_PELANGGAN]Pelanggan
 
 type ModelPelanggan struct {
@@ -18,13 +23,17 @@ type ModelPelanggan struct {
 	nPelanggan      int
 }
 
-func (p ModelPelanggan) Create(nama, alamat, nomorTelepon, alamatEmail string, status bool) bool {
+func (p *ModelPelanggan) Create() bool {
 	/*
 		Membuat data pelanggan baru, return false bila data telah penuh
 	*/
 
 	if p.nPelanggan < NMAX_PELANGGAN {
-		p.daftarPelanggan[p.nPelanggan] = Pelanggan{p.nPelanggan + 1, nama, alamat, nomorTelepon, alamatEmail, status}
+
+		var i = p.nPelanggan
+
+		p.daftarPelanggan[i].id = p.nPelanggan + 1
+		create_form(&p.daftarPelanggan[i])
 		p.nPelanggan++
 
 		return true
