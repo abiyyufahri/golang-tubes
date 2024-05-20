@@ -79,7 +79,7 @@ func viewAllTable(dp ModelPelanggan) {
 	t.SetStyles(s)
 
 	m := modelTable{t}
-	if _, err := tea.NewProgram(m).Run(); err != nil {
+	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println("Error running program on showing pelanggan's table:", err)
 		os.Exit(1)
 	}
