@@ -42,11 +42,11 @@ func (p *ModelPelanggan) Create() bool {
 	return false // data pelanggan telah penuh
 }
 
-func (p ModelPelanggan) ReadAll() (tabPelanggan, int) {
+func (p ModelPelanggan) ReadAll() {
 	/*
 		Mengembalikan daftar pelanggan dan jumlah pelanggan nya
 	*/
-	return p.daftarPelanggan, p.nPelanggan
+	viewAllTable(p)
 }
 
 func (p ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
