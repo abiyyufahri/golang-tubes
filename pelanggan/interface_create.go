@@ -22,6 +22,12 @@ func create_form(p *Pelanggan) {
 				Value(&p.alamat),
 
 			huh.NewInput().
+				Title("No. Hp").
+				Description("Nomor telp/hp yang dapat dihubungi").
+				Placeholder("Cth: 08123456789").
+				Value(&p.nomorTelepon),
+
+			huh.NewInput().
 				Title("Email").
 				Description("Email untuk informasikan ke pengguna").
 				Placeholder("Cth: abcd@mantapjiwa.com").
