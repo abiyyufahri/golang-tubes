@@ -215,8 +215,9 @@ func menuEkspedisi() {
 		fmt.Println("2. Lihat Ekspedisi")
 		fmt.Println("3. Update Ekspedisi")
 		fmt.Println("4. Hapus Ekspedisi")
-		fmt.Println("5. Kembali ke Menu Utama")
-		fmt.Print("Pilih opsi (1/2/3/4/5): ")
+		fmt.Println("5. Sortir Ekspedisi")
+		fmt.Println("6. Kembali ke Menu Utama")
+		fmt.Print("Pilih opsi (1/2/3/4/5/6): ")
 		fmt.Scan(&opsi)
 		switch opsi {
 		case 1:
@@ -228,6 +229,8 @@ func menuEkspedisi() {
 		case 4:
 			doDeleteEkspedisi()
 		case 5:
+			sortEkspedisi()
+		case 6:
 			return
 		default:
 			fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
@@ -250,6 +253,8 @@ func addEkspedisi() {
 }
 
 func viewEkspedisi() {
+	var status int
+	var statusStr string
 	ekspedisis := ReadEkspedisi()
 	pelanggan := ReadAllPelanggan()
 	if nE == 0 {
@@ -258,9 +263,22 @@ func viewEkspedisi() {
 	}
 	for i := 0; i < nE; i++ {
 		for j := 0; j < nP; j++ {
+
+			status = ekspedisis[i].status
+			switch status {
+			case 1:
+				statusStr = "Selesai"
+			case 2:
+				statusStr = "Dikirim"
+			case 3:
+				statusStr = "Pending"
+			default:
+				statusStr = "Tidak Ada"
+			}
+
 			if ekspedisis[i].idPelanggan == pelanggan[j].id {
-				fmt.Printf("Ekspedisi %d: ID: %d, ID Pelanggan: %d,Nama Pelanggan: %s, Jenis Layanan: %s, Biaya: %s, Status: %d\n",
-					i+1, ekspedisis[i].id, ekspedisis[i].idPelanggan, pelanggan[j].nama, ekspedisis[i].jenisLayanan, ekspedisis[i].biayaEkspedisi, ekspedisis[i].status)
+				fmt.Printf("Ekspedisi %d: ID: %d, ID Pelanggan: %d,Nama Pelanggan: %s, Jenis Layanan: %s, Biaya: %s, Status: %s\n",
+					i+1, ekspedisis[i].id, ekspedisis[i].idPelanggan, pelanggan[j].nama, ekspedisis[i].jenisLayanan, ekspedisis[i].biayaEkspedisi, statusStr)
 			}
 		}
 	}
@@ -286,4 +304,31 @@ func doDeleteEkspedisi() {
 	fmt.Scan(&id)
 	DeleteEkspedisi(id)
 	fmt.Println("Ekspedisi berhasil dihapus.")
+}
+
+func sortEkspedisi() {
+	var opsi int
+	fmt.Println("\nPilihan pengurutan:")
+	fmt.Println("1. Urutkan berdasarkan ID Pelanggan")
+	fmt.Println("2. Urutkan berdasarkan Status (prioritaskan status tertentu)")
+	fmt.Print("Pilih opsi (1/2): ")
+	fmt.Scan(&opsi)
+
+	switch opsi {
+	case 1:
+		InsertionSortByIDPelanggan(&daftarEkspedisi)
+		fmt.Println("Data ekspedisi telah diurutkan berdasarkan ID Pelanggan.")
+	case 2:
+		var status int
+		fmt.Println("\nStatus yang disortir:")
+		fmt.Println("[1] Selesai")
+		fmt.Println("[2] Dikirim")
+		fmt.Println("[3] Pending")
+		fmt.Print("Pilih status: ")
+		fmt.Scan(&status)
+		InsertionSortByStatus(&daftarEkspedisi, status)
+		fmt.Println("Data ekspedisi telah diurutkan berdasarkan status.")
+	default:
+		fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
+	}
 }

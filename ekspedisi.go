@@ -79,3 +79,31 @@ func DeleteEkspedisi(id int) {
 	}
 	fmt.Println("Ekspedisi tidak ditemukan!")
 }
+
+func InsertionSortByIDPelanggan(E *tabEkspedisi) {
+	for i := 1; i < nE; i++ {
+		key := E[i]
+		j := i - 1
+
+		for j >= 0 && E[j].idPelanggan > key.idPelanggan {
+			E[j+1] = E[j]
+			j = j - 1
+		}
+		E[j+1] = key
+	}
+}
+
+func InsertionSortByStatus(E *tabEkspedisi, prioritizedStatus int) {
+	for i := 1; i < nE; i++ {
+		key := E[i]
+		j := i - 1
+
+		for j >= 0 && ((E[j].status != prioritizedStatus && key.status == prioritizedStatus) ||
+			(E[j].status != prioritizedStatus && key.status < E[j].status) ||
+			(E[j].status == prioritizedStatus && key.status == prioritizedStatus && E[j].idPelanggan > key.idPelanggan)) {
+			E[j+1] = E[j]
+			j = j - 1
+		}
+		E[j+1] = key
+	}
+}
