@@ -208,5 +208,82 @@ func sortPelanggan() {
 }
 
 func menuEkspedisi() {
-	fmt.Println("Fitur menu ekspedisi belum tersedia.")
+	for {
+		var opsi int
+		fmt.Println("\n======== Menu Ekspedisi ========")
+		fmt.Println("1. Tambah Ekspedisi")
+		fmt.Println("2. Lihat Ekspedisi")
+		fmt.Println("3. Update Ekspedisi")
+		fmt.Println("4. Hapus Ekspedisi")
+		fmt.Println("5. Kembali ke Menu Utama")
+		fmt.Print("Pilih opsi (1/2/3/4/5): ")
+		fmt.Scan(&opsi)
+		switch opsi {
+		case 1:
+			addEkspedisi()
+		case 2:
+			viewEkspedisi()
+		case 3:
+			updateEkspedisi()
+		case 4:
+			doDeleteEkspedisi()
+		case 5:
+			return
+		default:
+			fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
+		}
+	}
+}
+
+func addEkspedisi() {
+	var idPelanggan, status int
+	var jenisLayanan, biayaEkspedisi string
+	fmt.Print("Masukkan ID Pelanggan: ")
+	fmt.Scan(&idPelanggan)
+	fmt.Print("Masukkan Jenis Layanan: ")
+	fmt.Scan(&jenisLayanan)
+	fmt.Print("Masukkan Biaya Ekspedisi: ")
+	fmt.Scan(&biayaEkspedisi)
+	fmt.Print("Masukkan Status (1: Selesai, 2: Dikirim, 3: Pending): ")
+	fmt.Scan(&status)
+	createEkspedisi(idPelanggan, jenisLayanan, biayaEkspedisi, status)
+}
+
+func viewEkspedisi() {
+	ekspedisis := ReadEkspedisi()
+	pelanggan := ReadAllPelanggan()
+	if nE == 0 {
+		fmt.Println("Tidak ada data ekspedisi.")
+		return
+	}
+	for i := 0; i < nE; i++ {
+		for j := 0; j < nP; j++ {
+			if ekspedisis[i].idPelanggan == pelanggan[j].id {
+				fmt.Printf("Ekspedisi %d: ID: %d, ID Pelanggan: %d,Nama Pelanggan: %s, Jenis Layanan: %s, Biaya: %s, Status: %d\n",
+					i+1, ekspedisis[i].id, ekspedisis[i].idPelanggan, pelanggan[j].nama, ekspedisis[i].jenisLayanan, ekspedisis[i].biayaEkspedisi, ekspedisis[i].status)
+			}
+		}
+	}
+}
+
+func updateEkspedisi() {
+	var id, status int
+	var jenisLayanan, biayaEkspedisi string
+	fmt.Print("Masukkan ID Ekspedisi yang akan diupdate: ")
+	fmt.Scan(&id)
+	fmt.Print("Masukkan Jenis Layanan baru (atau ketik '0' untuk melewati): ")
+	fmt.Scan(&jenisLayanan)
+	fmt.Print("Masukkan Biaya Ekspedisi baru (atau ketik '0' untuk melewati): ")
+	fmt.Scan(&biayaEkspedisi)
+	fmt.Print("Masukkan Status baru (1: Selesai, 2: Dikirim, 3: Pending, atau ketik 0 untuk melewati): ")
+	fmt.Scan(&status)
+	UpdateEkspedisi(id, jenisLayanan, biayaEkspedisi, status)
+}
+
+func doDeleteEkspedisi() {
+	var id int
+	fmt.Print("Masukkan ID Ekspedisi yang akan dihapus: ")
+	fmt.Scan(&id)
+	DeleteEkspedisi(id)
+	fmt.Println("Ekspedisi berhasil dihapus.")
 }
