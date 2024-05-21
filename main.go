@@ -35,6 +35,7 @@ func subMenuPelanggan(dp *p.ModelPelanggan) {
 			dp.Create()
 		case 2:
 			dp.ReadAll()
+
 		}
 
 		subPilihan = _interface.GetModulSubMenuPelanggan()

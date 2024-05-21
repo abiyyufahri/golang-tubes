@@ -15,7 +15,8 @@ var baseStyle = lipgloss.NewStyle().
 	BorderForeground(lipgloss.Color("240"))
 
 type modelTable struct {
-	table table.Model
+	table         table.Model
+	dataPelanggan ModelPelanggan
 }
 
 func (m modelTable) Init() tea.Cmd { return nil }
@@ -34,9 +35,11 @@ func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "ctrl+c":
 			return m, tea.Quit
 		case "enter":
-			return m, tea.Batch(
-				tea.Printf("Let's go to %s!", m.table.SelectedRow()[1]),
-			)
+			go func() {
+				var id, _ = strconv.Atoi(m.table.SelectedRow()[1])
+				m.dataPelanggan.Read(id)
+			}()
+			return m, nil
 		}
 	}
 	m.table, cmd = m.table.Update(msg)
@@ -78,7 +81,7 @@ func viewAllTable(dp ModelPelanggan) {
 		Bold(false)
 	t.SetStyles(s)
 
-	m := modelTable{t}
+	m := modelTable{t, dp}
 	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println("Error running program on showing pelanggan's table:", err)
 		os.Exit(1)

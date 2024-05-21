@@ -1,5 +1,7 @@
 package pelanggan
 
+import "strconv"
+
 const NMAXPELANGGAN int = 20
 
 type Pelanggan struct {
@@ -39,9 +41,30 @@ func (p *ModelPelanggan) Create() bool {
 
 func (p *ModelPelanggan) ReadAll() {
 	/*
-		Mengembalikan daftar pelanggan dan jumlah pelanggan nya
+		menampilkan seluruh data pelanggan menggunakan table
 	*/
 	viewAllTable(*p)
+}
+
+func (p *ModelPelanggan) Read(id int) {
+
+	var booleanToString = map[bool]string{
+		true:  "Aktif",
+		false: "Nonaktif",
+	}
+
+	var pelanggan Pelanggan
+	pelanggan = p.daftarPelanggan[id]
+
+	var content string
+	content = "Nama :" + "\n" +
+		"id : " + strconv.Itoa(pelanggan.id) + "\n" +
+		"status : " + booleanToString[pelanggan.status] + "\n" +
+		"no telp: " + pelanggan.nomorTelepon + "\n" +
+		"email  : " + pelanggan.alamatEmail + "\n" +
+		"alamat : " + pelanggan.alamat + "\n"
+
+	show_pager(content)
 }
 
 func (p *ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
@@ -50,7 +73,7 @@ func (p *ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail 
 	*/
 
 	var idx int
-	idx = p.Search(id)
+	idx = p.SearchById(id)
 
 	if idx != -1 {
 		if nama != "0" {
@@ -77,7 +100,7 @@ func (p *ModelPelanggan) UpdateStatus(id int, status bool) bool {
 	*/
 
 	var idx int
-	idx = p.Search(id)
+	idx = p.SearchById(id)
 
 	if idx != -1 {
 		p.daftarPelanggan[idx].status = status
@@ -88,7 +111,7 @@ func (p *ModelPelanggan) UpdateStatus(id int, status bool) bool {
 
 }
 
-func (p *ModelPelanggan) Search(id int) int {
+func (p *ModelPelanggan) SearchById(id int) int {
 	/*
 		Mengembalikan index dari id pelanggan, atau -1 bila tidak ditemukan
 		Note: Pencarian menggunakan binary search
@@ -116,7 +139,7 @@ func (p *ModelPelanggan) Delete(id int) bool {
 		Menghapus data berdasarkan id, return false bila id tidak ditemukan
 	*/
 	var idx int
-	idx = p.Search(id)
+	idx = p.SearchById(id)
 
 	if idx == -1 {
 		return false // jika id tidak ditemukan
