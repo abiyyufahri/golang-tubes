@@ -9,6 +9,8 @@ func main() {
 
 	var dataPelanggan p.ModelPelanggan
 
+	dataPelanggan.GetData()
+
 	var pilihan int
 	pilihan = _interface.GetModuleChoice()
 	for pilihan != -1 {
