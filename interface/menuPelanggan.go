@@ -12,7 +12,21 @@ type modelMenuPelanggan struct {
 	choices []string
 }
 
-func initialModelMenuPelanggan() modelMenuPelanggan {
+func initialModelMenuPelanggan(name string) modelMenuPelanggan {
+	if name != "" {
+		return modelMenuPelanggan{
+			choosen: 0,
+			choices: []string{
+				"Tambah Pelanggan",
+				"Lihat Daftar Pelanggan",
+				"Lihat Detail << " + name + " >> ",
+				"Ubah Status << " + name + " >> ",
+				"Ubah Data << " + name + " >> ",
+				"Hapus Pelanggan",
+			},
+		}
+	}
+
 	return modelMenuPelanggan{
 		// Our menu module
 		choosen: 0,
@@ -28,6 +42,7 @@ func initialModelMenuPelanggan() modelMenuPelanggan {
 }
 
 func (m modelMenuPelanggan) Init() tea.Cmd {
+
 	// Just return `nil`, which means "no I/O right now, please."
 	return nil
 }
@@ -73,8 +88,8 @@ func (m modelMenuPelanggan) View() string {
 	return s
 }
 
-func GetModulSubMenuPelanggan() int {
-	p := tea.NewProgram(initialModelMenuPelanggan(), tea.WithAltScreen())
+func GetModulSubMenuPelanggan(selectedName string) int {
+	p := tea.NewProgram(initialModelMenuPelanggan(selectedName), tea.WithAltScreen())
 	m, err := p.Run()
 	if err != nil {
 		fmt.Printf("Yaa, there's been an error in submenu of ekspedisi: %v", err)

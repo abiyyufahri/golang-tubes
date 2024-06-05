@@ -1,14 +1,15 @@
 package main
 
 import (
-	"tubes/interface"
-	p "tubes/pelanggan"
+	"TUBES_GO/interface"
+	p "TUBES_GO/pelanggan"
 )
 
 func main() {
 
 	var dataPelanggan p.ModelPelanggan
 
+	dataPelanggan.Init()
 	dataPelanggan.GetData()
 
 	var pilihan int
@@ -29,7 +30,7 @@ func main() {
 
 func subMenuPelanggan(dp *p.ModelPelanggan) {
 	var subPilihan int
-	subPilihan = _interface.GetModulSubMenuPelanggan()
+	subPilihan = _interface.GetModulSubMenuPelanggan(dp.GetSelectedName())
 	for subPilihan != 0 {
 
 		switch subPilihan {
@@ -41,7 +42,7 @@ func subMenuPelanggan(dp *p.ModelPelanggan) {
 			dp.Read()
 		}
 
-		subPilihan = _interface.GetModulSubMenuPelanggan()
+		subPilihan = _interface.GetModulSubMenuPelanggan(dp.GetSelectedName())
 	}
 }
 

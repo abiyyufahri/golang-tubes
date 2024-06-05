@@ -17,10 +17,11 @@ var baseStyle = lipgloss.NewStyle().
 
 type modelTable struct {
 	table         table.Model
-	dataPelanggan ModelPelanggan
+	dataPelanggan *ModelPelanggan
 }
 
 func (m *modelTable) Init() tea.Cmd {
+	m.table.SetRows(m.dataPelanggan.ToTableRow())
 	return nil
 }
 
@@ -65,8 +66,9 @@ func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			selected := m.table.SelectedRow()
-			m.dataPelanggan.selectedId, _ = strconv.Atoi(selected[0])
-			fmt.Println("Kamu memilih", selected[1], "                       ")
+			selectedId, _ := strconv.Atoi(selected[0])
+			m.dataPelanggan.setSelectedId(selectedId)
+			fmt.Println("\n\n\n >>> Kamu memilih", selected[1], "                       \n tunggu beberapa saat")
 			time.AfterFunc(3*time.Second, func() {
 				// do nothing
 
@@ -94,7 +96,7 @@ func (m *modelTable) View() string {
 		"7. Tampilkan pelanggan semua status"
 }
 
-func viewAllTable(dp ModelPelanggan) {
+func viewAllTable(dp *ModelPelanggan) {
 	columns := []table.Column{
 		{Title: "ID", Width: 4},
 		{Title: "Nama", Width: 20},
