@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,7 +20,9 @@ type modelTable struct {
 	dataPelanggan ModelPelanggan
 }
 
-func (m modelTable) Init() tea.Cmd { return nil }
+func (m modelTable) Init() tea.Cmd {
+	return nil
+}
 
 func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
@@ -32,14 +35,18 @@ func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.table.Focus()
 			}
+		case "enter":
+			selected := m.table.SelectedRow()
+			m.dataPelanggan.selectedPelanggan, _ = strconv.Atoi(selected[0])
+			fmt.Println("Kamu memilih", selected[1], "                       ")
+			time.AfterFunc(3*time.Second, func() {
+				// do nothing
+
+			})
+			time.Sleep(3 * time.Second)
+			return m, tea.Quit
 		case "q", "ctrl+c":
 			return m, tea.Quit
-		case "enter":
-			go func() {
-				var id, _ = strconv.Atoi(m.table.SelectedRow()[1])
-				m.dataPelanggan.Read(id)
-			}()
-			return m, nil
 		}
 	}
 	m.table, cmd = m.table.Update(msg)
@@ -47,7 +54,8 @@ func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m modelTable) View() string {
-	return baseStyle.Render(m.table.View()) + "\n"
+	return baseStyle.Render(m.table.View()) + "\n" +
+		"Pilih pelanggan untuk di-keep"
 }
 
 func viewAllTable(dp ModelPelanggan) {
