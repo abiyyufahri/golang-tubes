@@ -33,7 +33,7 @@ func (p *ModelPelanggan) Init() {
 	p.nomorPelanggan = 1 // nomor dimulai dari 1
 }
 
-func (p *ModelPelanggan) Create() bool {
+func (p *ModelPelanggan) Create() {
 	/*
 		Membuat data pelanggan baru, return false bila data telah penuh
 	*/
@@ -42,15 +42,21 @@ func (p *ModelPelanggan) Create() bool {
 
 		var i = p.nPelanggan
 
-		p.daftarPelanggan[i].id = p.nomorPelanggan
-		create_form(&p.daftarPelanggan[i])
-		p.nPelanggan++
-		p.nomorPelanggan++
+		var pelanggan Pelanggan
+		var isSuccess bool
+		isSuccess, pelanggan = create_form()
 
-		return true
+		if isSuccess {
+			p.daftarPelanggan[i] = pelanggan
+			p.daftarPelanggan[i].id = p.nomorPelanggan
+			p.nPelanggan++
+			p.nomorPelanggan++
+		}
+		return
 	}
 
-	return false // data pelanggan telah penuh
+	content := "Data telah penuh "
+	show_pager(content)
 }
 
 func (p *ModelPelanggan) ReadAll() {
@@ -103,31 +109,20 @@ func (p *ModelPelanggan) Read() {
 	show_pager(content)
 }
 
-func (p *ModelPelanggan) Update(id int, nama, alamat, nomorTelepon, alamatEmail string) bool {
+func (p *ModelPelanggan) Update() {
 	/*
 		Memperbarui data pelanggan, return false jika data tidak ditemukan
 	*/
 
 	var idx int
-	idx = p.SearchById(id)
-
-	if idx != -1 {
-		if nama != "0" {
-			p.daftarPelanggan[idx].nama = nama
-		}
-		if alamat != "0" {
-			p.daftarPelanggan[idx].alamat = alamat
-		}
-		if nomorTelepon != "0" {
-			p.daftarPelanggan[idx].nomorTelepon = nomorTelepon
-		}
-		if alamatEmail != "0" {
-			p.daftarPelanggan[idx].alamatEmail = alamatEmail
-		}
-		return true // sukses
+	if p.selectedId != -1 && p.searchById() != -1 {
+		idx = p.searchById()
+		update_form(&p.daftarPelanggan[idx])
+	} else {
+		var content = " Data tidak ditemukan, harap keep seorang pelanggan dari daftar pelanggan"
+		show_pager(content)
 	}
 
-	return false // gagal
 }
 
 func (p *ModelPelanggan) UpdateStatus(id int, status bool) bool {
@@ -293,7 +288,7 @@ func (p *ModelPelanggan) filterByNonActive() ModelPelanggan {
 
 	var nActive int
 	for i := 0; i < p.nPelanggan; i++ {
-		if p.daftarPelanggan[i].status == true {
+		if p.daftarPelanggan[i].status == false {
 			pelangganNonActive.daftarPelanggan[nActive] = p.daftarPelanggan[i]
 			nActive++
 		}

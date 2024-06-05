@@ -40,6 +40,8 @@ func subMenuPelanggan(dp *p.ModelPelanggan) {
 			dp.ReadAll()
 		case 3:
 			dp.Read()
+		case 4:
+			dp.Update()
 		}
 
 		subPilihan = _interface.GetModulSubMenuPelanggan(dp.GetSelectedName())

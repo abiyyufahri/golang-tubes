@@ -51,7 +51,7 @@ func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.table.SetRows(actives.ToTableRow())
 			return m, nil
 		case "6":
-			actives := m.dataPelanggan.filterByActive()
+			actives := m.dataPelanggan.filterByNonActive()
 			m.table.SetRows(actives.ToTableRow())
 			return m, nil
 		case "7":

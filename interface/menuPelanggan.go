@@ -20,7 +20,6 @@ func initialModelMenuPelanggan(name string) modelMenuPelanggan {
 				"Tambah Pelanggan",
 				"Lihat Daftar Pelanggan",
 				"Lihat Detail << " + name + " >> ",
-				"Ubah Status << " + name + " >> ",
 				"Ubah Data << " + name + " >> ",
 				"Hapus Pelanggan",
 			},
@@ -34,7 +33,6 @@ func initialModelMenuPelanggan(name string) modelMenuPelanggan {
 			"Tambah Pelanggan",
 			"Lihat Daftar Pelanggan",
 			"Lihat Detail Pelanggan",
-			"Ubah Status Pelanggan",
 			"Ubah Data Pelanggan",
 			"Hapus Pelanggan",
 		},
@@ -61,7 +59,7 @@ func (m modelMenuPelanggan) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.choosen = 0
 			return m, tea.Quit
 
-		case "1", "2", "3", "4", "5", "6": // jika pilihan nya 1 atau 2 atau seterusnya
+		case "1", "2", "3", "4": // jika pilihan nya 1 atau 2 atau seterusnya
 			m.choosen, _ = strconv.Atoi(msg.String())
 			return m, tea.Quit
 		}
@@ -81,7 +79,7 @@ func (m modelMenuPelanggan) View() string {
 	}
 
 	// The footer
-	s += "\n\nTekan 1,2,3,4,5 atau 6 untuk memilih" +
+	s += "\n\nTekan 1,2,3 atau 4 untuk memilih" +
 		"\nTekan 0 untuk kembali.\n"
 
 	// Send the UI for rendering

@@ -53,7 +53,7 @@ func (m modelPager) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "esc" {
+		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "enter" || k == "0" {
 			return m, tea.Quit
 		}
 
@@ -128,6 +128,7 @@ func max(a, b int) int {
 
 func show_pager(content string) {
 
+	content += "\n\n\nKetik 0 atau enter untuk kembali"
 	p := tea.NewProgram(
 		modelPager{content: content}, // use the full size of the terminal in its "alternate screen buffer"
 		tea.WithMouseCellMotion(),
