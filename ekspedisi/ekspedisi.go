@@ -1,0 +1,111 @@
+package ekspedisi
+
+//
+//import (
+//	"fmt"
+//	p "tubes/pelanggan"
+//)
+//
+//const NMAX_EKSPEDISI int = 20
+//
+//type Ekspedisi struct {
+//	id             int
+//	pelanggan      p.Pelanggan
+//	jenisLayanan   string
+//	biayaEkspedisi string
+//	status         int
+//}
+//
+//type tabEkspedisi [NMAX_EKSPEDISI]Ekspedisi
+//
+//type ModelEkspedisi struct {
+//	selectedEkspedisi int // nomor ekspedisi yang terpilih
+//	daftarEkspedisi   tabEkspedisi
+//	nomorEkspedisi    int
+//	nEkspedisi        int
+//}
+//
+//func (e *ModelEkspedisi) Create() bool {
+//	if e.nEkspedisi < NMAX_EKSPEDISI {
+//		var i = e.nEkspedisi
+//
+//		e.daftarEkspedisi[i].id = e.nomorEkspedisi + 1
+//
+//		create_form(&e.daftarEkspedisi[i])
+//		e.nEkspedisi++
+//		e.nomorEkspedisi++
+//		return true
+//	}
+//	return false
+//}
+//
+//func ReadEkspedisi() tabEkspedisi {
+//	return daftarEkspedisi
+//}
+//
+//func UpdateEkspedisi(id int, jenisLayanan, biayaEkspedisi string, status int) {
+//	var left, right, mid int
+//	left = 0
+//	right = nE - 1
+//
+//	for left <= right {
+//		mid = (left + right) / 2
+//		if daftarEkspedisi[mid].id == id {
+//			if jenisLayanan != "0" {
+//				daftarEkspedisi[mid].jenisLayanan = jenisLayanan
+//			}
+//			if biayaEkspedisi != "0" {
+//				daftarEkspedisi[mid].biayaEkspedisi = biayaEkspedisi
+//			}
+//			if status != 0 {
+//				daftarEkspedisi[mid].status = status
+//			}
+//			fmt.Println("Data ekspedisi berhasil diperbarui.")
+//			return
+//		} else if daftarEkspedisi[mid].id < id {
+//			left = mid + 1
+//		} else {
+//			right = mid - 1
+//		}
+//	}
+//	fmt.Println("Ekspedisi tidak ditemukan!")
+//}
+//
+//func DeleteEkspedisi(id int) {
+//	for i := 0; i < nE; i++ {
+//		if daftarEkspedisi[i].id == id {
+//			daftarEkspedisi[i] = daftarEkspedisi[nE-1]
+//			nE--
+//			return
+//		}
+//	}
+//	fmt.Println("Ekspedisi tidak ditemukan!")
+//}
+//
+//func InsertionSortByIDPelanggan(E *tabEkspedisi) {
+//	for i := 1; i < nE; i++ {
+//		key := E[i]
+//		j := i - 1
+//
+//		for j >= 0 && E[j].idPelanggan > key.idPelanggan {
+//			E[j+1] = E[j]
+//			j = j - 1
+//		}
+//		E[j+1] = key
+//	}
+//}
+//
+//func InsertionSortByStatus(E *tabEkspedisi, prioritizedStatus int) {
+//	for i := 1; i < nE; i++ {
+//		key := E[i]
+//		j := i - 1
+//
+//		for j >= 0 && ((E[j].status != prioritizedStatus && key.status == prioritizedStatus) ||
+//			(E[j].status != prioritizedStatus && key.status < E[j].status) ||
+//			(E[j].status == prioritizedStatus && key.status == prioritizedStatus && E[j].idPelanggan > key.idPelanggan)) {
+//			E[j+1] = E[j]
+//			j = j - 1
+//		}
+//		E[j+1] = key
+//	}
+//}

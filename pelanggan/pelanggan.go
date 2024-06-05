@@ -13,11 +13,11 @@ type Pelanggan struct {
 	status       bool
 }
 
-type tabPelanggan [NMAXPELANGGAN]Pelanggan
+type TabPelanggan [NMAXPELANGGAN]Pelanggan
 
 type ModelPelanggan struct {
 	selectedPelanggan int // nomor pelanggan yang dipilih
-	daftarPelanggan   tabPelanggan
+	daftarPelanggan   TabPelanggan
 	nomorPelanggan    int
 	nPelanggan        int
 }
@@ -49,8 +49,9 @@ func (p *ModelPelanggan) ReadAll() {
 	viewAllTable(*p)
 }
 
-func (p *ModelPelanggan) Read(id int) {
+func (p *ModelPelanggan) Read() {
 
+	var id int = p.selectedPelanggan
 	var booleanToString = map[bool]string{
 		true:  "Aktif",
 		false: "Nonaktif",
@@ -154,16 +155,44 @@ func (p *ModelPelanggan) Delete(id int) bool {
 	return true
 }
 
-//func SortPelanggan(daftarPelanggan *tabPelanggan, prioritizedStatus int) {
-//	for i := 1; i < nP; i++ {
-//		key := daftarPelanggan[i]
-//		j := i - 1
-//
-//		for j >= 0 && ((daftarPelanggan[j].status != prioritizedStatus && key.status == prioritizedStatus) ||
-//			(daftarPelanggan[j].status != prioritizedStatus && key.status < daftarPelanggan[j].status)) {
-//			daftarPelanggan[j+1] = daftarPelanggan[j]
-//			j = j - 1
-//		}
-//		daftarPelanggan[j+1] = key
-//	}
-//}
+func (p *ModelPelanggan) GetAll() TabPelanggan {
+	return p.daftarPelanggan
+}
+
+// sorting pelanggan
+func (p *ModelPelanggan) SortByNumberDescending() {
+	/*
+		Mengurutkan p.daftarPelanggan berdasarkan nomor pelanggan secara descending
+		dengan menggunakan insertion sort
+	*/
+	for i := 1; i < p.nPelanggan; i++ {
+		key := p.daftarPelanggan[i]
+		j := i - 1
+
+		// Pindahkan elemen dari p.daftarPelanggan[0..i-1], yang lebih kecil dari key
+		// ke satu posisi di depan posisi sekarang mereka
+		for j >= 0 && p.daftarPelanggan[j].id < key.id {
+			p.daftarPelanggan[j+1] = p.daftarPelanggan[j]
+			j = j - 1
+		}
+		p.daftarPelanggan[j+1] = key
+	}
+}
+
+func (p *ModelPelanggan) SortByNumberAscending() {
+	/*
+		Mengurutkan p.daftarPelanggan berdasarkan nomor pelanggan secara descending
+		dengan menggunakan insertion sort
+	*/
+	for i := 0; i < p.nPelanggan-1; i++ {
+		minIdx := i
+		for j := i + 1; j < p.nPelanggan; j++ {
+			if p.daftarPelanggan[j].nomorTelepon < p.daftarPelanggan[minIdx].nomorTelepon {
+				minIdx = j
+			}
+		}
+
+		// Tukar elemen yang ditemukan dengan elemen pertama
+		p.daftarPelanggan[i], p.daftarPelanggan[minIdx] = p.daftarPelanggan[minIdx], p.daftarPelanggan[i]
+	}
+}

@@ -130,7 +130,8 @@ func show_pager(content string) {
 
 	p := tea.NewProgram(
 		modelPager{content: content}, // use the full size of the terminal in its "alternate screen buffer"
-		tea.WithMouseCellMotion(),    // turn on mouse support so we can track the mouse wheel
+		tea.WithMouseCellMotion(),
+		tea.WithAltScreen(), // turn on mouse support so we can track the mouse wheel
 	)
 
 	if _, err := p.Run(); err != nil {
