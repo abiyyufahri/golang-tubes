@@ -20,15 +20,43 @@ type modelTable struct {
 	dataPelanggan ModelPelanggan
 }
 
-func (m modelTable) Init() tea.Cmd {
+func (m *modelTable) Init() tea.Cmd {
 	return nil
 }
 
-func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "1": // urut nama menaik
+			m.dataPelanggan.SortByNameAscending()
+			m.table.SetRows(m.dataPelanggan.ToTableRow())
+			return m, nil
+		case "2": // urut nama menurun
+			m.dataPelanggan.sortByNameDescending()
+			m.table.SetRows(m.dataPelanggan.ToTableRow())
+			return m, nil
+		case "3": // urut id menaik
+			m.dataPelanggan.SortByIdAscending()
+			m.table.SetRows(m.dataPelanggan.ToTableRow())
+			return m, nil
+		case "4": // urut id menurun
+			m.dataPelanggan.SortByIdDescending()
+			m.table.SetRows(m.dataPelanggan.ToTableRow())
+			return m, nil
+		case "5":
+			actives := m.dataPelanggan.filterByActive()
+			m.table.SetRows(actives.ToTableRow())
+			return m, nil
+		case "6":
+			actives := m.dataPelanggan.filterByActive()
+			m.table.SetRows(actives.ToTableRow())
+			return m, nil
+		case "7":
+			nonActives := m.dataPelanggan.GetAll()
+			m.table.SetRows(nonActives.ToTableRow())
+			return m, nil
 		case "esc":
 			if m.table.Focused() {
 				m.table.Blur()
@@ -37,7 +65,7 @@ func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			selected := m.table.SelectedRow()
-			m.dataPelanggan.selectedPelanggan, _ = strconv.Atoi(selected[0])
+			m.dataPelanggan.selectedId, _ = strconv.Atoi(selected[0])
 			fmt.Println("Kamu memilih", selected[1], "                       ")
 			time.AfterFunc(3*time.Second, func() {
 				// do nothing
@@ -45,7 +73,7 @@ func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			})
 			time.Sleep(3 * time.Second)
 			return m, tea.Quit
-		case "q", "ctrl+c":
+		case "q", "ctrl+c", "0":
 			return m, tea.Quit
 		}
 	}
@@ -53,9 +81,17 @@ func (m modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m modelTable) View() string {
+func (m *modelTable) View() string {
 	return baseStyle.Render(m.table.View()) + "\n" +
-		"Pilih pelanggan untuk di-keep"
+		"Pilih pelanggan untuk di-keep\n" +
+		"Menu sorting/filter (klik keyboard): \n" +
+		"1. Urut nama menaik \n" +
+		"2. Urut nama menurun\n" +
+		"3. Urut id menaik\n" +
+		"4. Urut id menurun\n" +
+		"5. Tampilkan pelanggan aktif saja\n" +
+		"6. Tampilkan pelanggan non-aktif saja\n" +
+		"7. Tampilkan pelanggan semua status"
 }
 
 func viewAllTable(dp ModelPelanggan) {
@@ -90,7 +126,7 @@ func viewAllTable(dp ModelPelanggan) {
 	t.SetStyles(s)
 
 	m := modelTable{t, dp}
-	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
+	if _, err := tea.NewProgram(&m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println("Error running program on showing pelanggan's table:", err)
 		os.Exit(1)
 	}

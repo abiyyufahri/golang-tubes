@@ -1,6 +1,8 @@
 package pelanggan
 
-import "strconv"
+import (
+	"strconv"
+)
 
 const NMAXPELANGGAN int = 20
 
@@ -16,10 +18,10 @@ type Pelanggan struct {
 type TabPelanggan [NMAXPELANGGAN]Pelanggan
 
 type ModelPelanggan struct {
-	selectedPelanggan int // nomor pelanggan yang dipilih
-	daftarPelanggan   TabPelanggan
-	nomorPelanggan    int
-	nPelanggan        int
+	selectedId      int // nomor pelanggan yang dipilih
+	daftarPelanggan TabPelanggan
+	nomorPelanggan  int
+	nPelanggan      int
 }
 
 func (p *ModelPelanggan) Create() bool {
@@ -51,7 +53,7 @@ func (p *ModelPelanggan) ReadAll() {
 
 func (p *ModelPelanggan) Read() {
 
-	var id int = p.selectedPelanggan
+	var id int = p.selectedId
 	var booleanToString = map[bool]string{
 		true:  "Aktif",
 		false: "Nonaktif",
@@ -155,14 +157,10 @@ func (p *ModelPelanggan) Delete(id int) bool {
 	return true
 }
 
-func (p *ModelPelanggan) GetAll() TabPelanggan {
-	return p.daftarPelanggan
-}
-
 // sorting pelanggan
-func (p *ModelPelanggan) SortByNumberDescending() {
+func (p *ModelPelanggan) SortByIdDescending() {
 	/*
-		Mengurutkan p.daftarPelanggan berdasarkan nomor pelanggan secara descending
+		Mengurutkan p.daftarPelanggan berdasarkan id pelanggan secara descending
 		dengan menggunakan insertion sort
 	*/
 	for i := 1; i < p.nPelanggan; i++ {
@@ -179,15 +177,15 @@ func (p *ModelPelanggan) SortByNumberDescending() {
 	}
 }
 
-func (p *ModelPelanggan) SortByNumberAscending() {
+func (p *ModelPelanggan) SortByIdAscending() {
 	/*
-		Mengurutkan p.daftarPelanggan berdasarkan nomor pelanggan secara descending
+		Mengurutkan p.daftarPelanggan berdasarkan id pelanggan secara descending
 		dengan menggunakan insertion sort
 	*/
 	for i := 0; i < p.nPelanggan-1; i++ {
 		minIdx := i
 		for j := i + 1; j < p.nPelanggan; j++ {
-			if p.daftarPelanggan[j].nomorTelepon < p.daftarPelanggan[minIdx].nomorTelepon {
+			if p.daftarPelanggan[j].id < p.daftarPelanggan[minIdx].id {
 				minIdx = j
 			}
 		}
@@ -195,4 +193,88 @@ func (p *ModelPelanggan) SortByNumberAscending() {
 		// Tukar elemen yang ditemukan dengan elemen pertama
 		p.daftarPelanggan[i], p.daftarPelanggan[minIdx] = p.daftarPelanggan[minIdx], p.daftarPelanggan[i]
 	}
+}
+
+func (p *ModelPelanggan) sortByNameDescending() {
+	/*
+		Mengurutkan p.daftarPelanggan berdasarkan nama pelanggan secara descending
+		dengan menggunakan insertion sort
+	*/
+	for i := 1; i < p.nPelanggan; i++ {
+		key := p.daftarPelanggan[i]
+		j := i - 1
+
+		// Pindahkan elemen dari p.daftarPelanggan[0..i-1], yang lebih kecil dari key
+		// ke satu posisi di depan posisi sekarang mereka
+		for j >= 0 && p.daftarPelanggan[j].nama < key.nama {
+			p.daftarPelanggan[j+1] = p.daftarPelanggan[j]
+			j = j - 1
+		}
+		p.daftarPelanggan[j+1] = key
+	}
+}
+
+func (p *ModelPelanggan) SortByNameAscending() {
+	/*
+		Mengurutkan p.daftarPelanggan berdasarkan nama pelanggan secara descending
+		dengan menggunakan insertion sort
+	*/
+	for i := 0; i < p.nPelanggan-1; i++ {
+		minIdx := i
+		for j := i + 1; j < p.nPelanggan; j++ {
+			if p.daftarPelanggan[j].nama < p.daftarPelanggan[minIdx].nama {
+				minIdx = j
+			}
+		}
+
+		// Tukar elemen yang ditemukan dengan elemen pertama
+		p.daftarPelanggan[i], p.daftarPelanggan[minIdx] = p.daftarPelanggan[minIdx], p.daftarPelanggan[i]
+	}
+}
+
+// filter
+func (p *ModelPelanggan) filterByActive() ModelPelanggan {
+	/*
+		Mengembalikan model pelanggan dengan daftarpelanggan
+		yang berstatus aktif saja
+	*/
+	var pelangganActive ModelPelanggan
+
+	var nActive int
+	for i := 0; i < p.nPelanggan; i++ {
+		if p.daftarPelanggan[i].status == true {
+			pelangganActive.daftarPelanggan[nActive] = p.daftarPelanggan[i]
+			nActive++
+		}
+	}
+	pelangganActive.nPelanggan = nActive
+	pelangganActive.selectedId = -1
+	pelangganActive.nomorPelanggan = p.nomorPelanggan
+
+	return pelangganActive
+}
+
+func (p *ModelPelanggan) filterByNonActive() ModelPelanggan {
+	/*
+		Mengembalikan model pelanggan dengan daftarpelanggan
+		yang berstatus non-active saja
+	*/
+	var pelangganNonActive ModelPelanggan
+
+	var nActive int
+	for i := 0; i < p.nPelanggan; i++ {
+		if p.daftarPelanggan[i].status == true {
+			pelangganNonActive.daftarPelanggan[nActive] = p.daftarPelanggan[i]
+			nActive++
+		}
+	}
+	pelangganNonActive.nPelanggan = nActive
+	pelangganNonActive.selectedId = -1
+	pelangganNonActive.nomorPelanggan = p.nomorPelanggan
+
+	return pelangganNonActive
+}
+
+func (p *ModelPelanggan) GetAll() ModelPelanggan {
+	return *p
 }
