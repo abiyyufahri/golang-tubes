@@ -16,8 +16,10 @@ type Pelanggan struct {
 type tabPelanggan [NMAXPELANGGAN]Pelanggan
 
 type ModelPelanggan struct {
-	daftarPelanggan tabPelanggan
-	nPelanggan      int
+	selectedPelanggan int // nomor pelanggan yang dipilih
+	daftarPelanggan   tabPelanggan
+	nomorPelanggan    int
+	nPelanggan        int
 }
 
 func (p *ModelPelanggan) Create() bool {
@@ -29,9 +31,10 @@ func (p *ModelPelanggan) Create() bool {
 
 		var i = p.nPelanggan
 
-		p.daftarPelanggan[i].id = p.nPelanggan + 1
+		p.daftarPelanggan[i].id = p.nomorPelanggan + 1
 		create_form(&p.daftarPelanggan[i])
 		p.nPelanggan++
+		p.nomorPelanggan++
 
 		return true
 	}
@@ -57,7 +60,7 @@ func (p *ModelPelanggan) Read(id int) {
 	pelanggan = p.daftarPelanggan[id]
 
 	var content string
-	content = "Nama :" + "\n" +
+	content = "Nama :" + pelanggan.nama + "\n" +
 		"id : " + strconv.Itoa(pelanggan.id) + "\n" +
 		"status : " + booleanToString[pelanggan.status] + "\n" +
 		"no telp: " + pelanggan.nomorTelepon + "\n" +
