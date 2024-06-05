@@ -65,8 +65,9 @@ func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			selected := m.table.SelectedRow()
-			m.dataPelanggan.selectedId, _ = strconv.Atoi(selected[0])
-			fmt.Println("Kamu memilih", selected[1], "                       ")
+			selectedId, _ := strconv.Atoi(selected[0])
+			m.dataPelanggan.setSelectedId(selectedId)
+			fmt.Println("\n >>> Kamu memilih", selected[1], "                       \n tunggu beberapa saat")
 			time.AfterFunc(3*time.Second, func() {
 				// do nothing
 
@@ -141,6 +142,7 @@ func (p *ModelPelanggan) ToTableRow() []table.Row {
 		false: "Nonaktif",
 	}
 
+	p.SortByIdAscending()
 	for i := 0; i < p.nPelanggan; i++ {
 		pelanggan = p.daftarPelanggan[i]
 		row := table.Row{

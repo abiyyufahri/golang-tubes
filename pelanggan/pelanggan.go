@@ -24,6 +24,15 @@ type ModelPelanggan struct {
 	nPelanggan      int
 }
 
+func (p *ModelPelanggan) Init() {
+	/*
+		I.S. model pelanggan, masih kosong
+		F.S. membuat inisialisasi state dari model
+	*/
+	p.selectedId = -1    // tidak ada id yang dipilih
+	p.nomorPelanggan = 1 // nomor dimulai dari 1
+}
+
 func (p *ModelPelanggan) Create() bool {
 	/*
 		Membuat data pelanggan baru, return false bila data telah penuh
@@ -33,7 +42,7 @@ func (p *ModelPelanggan) Create() bool {
 
 		var i = p.nPelanggan
 
-		p.daftarPelanggan[i].id = p.nomorPelanggan + 1
+		p.daftarPelanggan[i].id = p.nomorPelanggan
 		create_form(&p.daftarPelanggan[i])
 		p.nPelanggan++
 		p.nomorPelanggan++
@@ -51,24 +60,34 @@ func (p *ModelPelanggan) ReadAll() {
 	viewAllTable(*p)
 }
 
+func (p *ModelPelanggan) setSelectedId(selectedId int) {
+	/*
+		mennganti id yang terpilih
+	*/
+	p.selectedId = selectedId
+}
+
 func (p *ModelPelanggan) Read() {
 
-	var id int = p.selectedId
 	var booleanToString = map[bool]string{
 		true:  "Aktif",
 		false: "Nonaktif",
 	}
 
-	var pelanggan Pelanggan
-	pelanggan = p.daftarPelanggan[id]
+	var idx = p.searchById()
 
 	var content string
-	content = "Nama :" + pelanggan.nama + "\n" +
-		"id : " + strconv.Itoa(pelanggan.id) + "\n" +
-		"status : " + booleanToString[pelanggan.status] + "\n" +
-		"no telp: " + pelanggan.nomorTelepon + "\n" +
-		"email  : " + pelanggan.alamatEmail + "\n" +
-		"alamat : " + pelanggan.alamat + "\n"
+	if idx != -1 {
+		var pelanggan = p.daftarPelanggan[idx]
+		content = "Nama :" + pelanggan.nama + "\n" +
+			"id : " + strconv.Itoa(pelanggan.id) + "\n" +
+			"status : " + booleanToString[pelanggan.status] + "\n" +
+			"no telp: " + pelanggan.nomorTelepon + "\n" +
+			"email  : " + pelanggan.alamatEmail + "\n" +
+			"alamat : " + pelanggan.alamat + "\n"
+	} else {
+		content = " Data tidak ditemukan, harap keep seorang pelanggan dari daftar pelanggan"
+	}
 
 	show_pager(content)
 }
@@ -273,6 +292,27 @@ func (p *ModelPelanggan) filterByNonActive() ModelPelanggan {
 	pelangganNonActive.nomorPelanggan = p.nomorPelanggan
 
 	return pelangganNonActive
+}
+
+// search
+func (p *ModelPelanggan) searchById() int {
+	/*
+		Mengembalikan nilai index elemen dari p.daftarPelanggan
+		saat elemen.id = selectedId
+		Pencarian menggunakan binary search
+	*/
+	low, high := 0, p.nPelanggan-1
+	for low <= high {
+		mid := (low + high) / 2
+		if p.daftarPelanggan[mid].id == p.selectedId {
+			return mid
+		} else if p.daftarPelanggan[mid].id < p.selectedId {
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+	}
+	return -1
 }
 
 func (p *ModelPelanggan) GetAll() ModelPelanggan {

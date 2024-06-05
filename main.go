@@ -9,6 +9,7 @@ func main() {
 
 	var dataPelanggan p.ModelPelanggan
 
+	dataPelanggan.Init()
 	dataPelanggan.GetData()
 
 	var pilihan int
