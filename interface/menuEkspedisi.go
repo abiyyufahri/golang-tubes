@@ -12,14 +12,30 @@ type modelMenuEkspedisi struct {
 	choices []string
 }
 
-func initialModelMenuEkspedisi() modelMenuEkspedisi {
+func initialModelMenuEkspedisi(packet string) modelMenuEkspedisi {
+	if packet != "" {
+		return modelMenuEkspedisi{
+			choosen: 0,
+			choices: []string{
+				"Tambah Ekspedisi",
+				"Lihat Daftar Ekspedisi",
+				"Lacak Data Ekspedisi",
+				"Ubah Status " + packet,
+				"Lihat Detail " + packet,
+				"Ubah Data " + packet,
+				"Hapus Data " + packet,
+			},
+		}
+	}
+
 	return modelMenuEkspedisi{
 		// Our menu module
 		choosen: 0,
 		choices: []string{
 			"Tambah Ekspedisi",
 			"Lihat Daftar Ekspedisi",
-			"Lihat Status Ekspedisi",
+			"Lacak Data Ekspedisi",
+			"Ubah Status Ekspedisi",
 			"Lihat Detail Ekspedisi",
 			"Ubah Data Ekspedisi",
 			"Hapus Data Ekspedisi",
@@ -46,7 +62,7 @@ func (m modelMenuEkspedisi) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.choosen = 0
 			return m, tea.Quit
 
-		case "1", "2", "3", "4", "5", "6": // jika pilihan nya 1 atau 2 atau seterusnya
+		case "1", "2", "3", "4", "5", "6", "7": // jika pilihan nya 1 atau 2 atau seterusnya
 			m.choosen, _ = strconv.Atoi(msg.String())
 			return m, tea.Quit
 		}
@@ -60,21 +76,21 @@ func (m modelMenuEkspedisi) View() string {
 	s := "\n\n==++ Modul Ekspedisi ++== \n\n"
 
 	// Iterate over our choices
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 7; i++ {
 		// Render the row
 		s += fmt.Sprintf("%d. %s\n", i+1, m.choices[i])
 	}
 
 	// The footer
-	s += "\n\nTekan 1,2,3,4,5 atau 6 untuk memilih" +
+	s += "\n\nTekan 1,2,3,4,5, 6 atau 7 untuk memilih" +
 		"\nTekan 0 untuk kembali.\n"
 
 	// Send the UI for rendering
 	return s
 }
 
-func GetModulSubMenuEkspedisi() int {
-	p := tea.NewProgram(initialModelMenuEkspedisi(), tea.WithAltScreen())
+func GetModulSubMenuEkspedisi(packet string) int {
+	p := tea.NewProgram(initialModelMenuEkspedisi(packet), tea.WithAltScreen())
 	m, err := p.Run()
 	if err != nil {
 		fmt.Printf("Yaa, there's been an error in submenu of ekspedisi: %v", err)

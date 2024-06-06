@@ -1,0 +1,4 @@
+resi,idPelanggan,jenisLayanan,deskripsiBarang,alamatAsal,alamatTujuan,biayaEkspedisi,status
+20240605123045912345678,1,1,Laptop,1234 Elm Street,5678 Oak Avenue,100000,1
+20240605123045912345679,2,2,Handphone,91011 Pine Road,1234 Elm Street,200000,2
+20240605123045912345680,3,3,Buku,1122 Birch Lane,3344 Maple Drive,150000,1

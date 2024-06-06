@@ -67,7 +67,8 @@ func (m *ModelPelanggan) GetData() {
 		count++
 	}
 
-	m.nPelanggan = count
+	m.nomorPelanggan += count
+	m.nPelanggan += count
 
 	// Tampilkan hasil
 	//for i := 0; i < count; i++ {

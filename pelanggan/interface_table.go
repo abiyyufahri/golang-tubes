@@ -35,7 +35,7 @@ func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.table.SetRows(m.dataPelanggan.ToTableRow())
 			return m, nil
 		case "2": // urut nama menurun
-			m.dataPelanggan.sortByNameDescending()
+			m.dataPelanggan.SortByNameDescending()
 			m.table.SetRows(m.dataPelanggan.ToTableRow())
 			return m, nil
 		case "3": // urut id menaik
@@ -47,11 +47,11 @@ func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.table.SetRows(m.dataPelanggan.ToTableRow())
 			return m, nil
 		case "5":
-			actives := m.dataPelanggan.filterByActive()
+			actives := m.dataPelanggan.FilterByActive()
 			m.table.SetRows(actives.ToTableRow())
 			return m, nil
 		case "6":
-			actives := m.dataPelanggan.filterByNonActive()
+			actives := m.dataPelanggan.FilterByNonActive()
 			m.table.SetRows(actives.ToTableRow())
 			return m, nil
 		case "7":
@@ -67,7 +67,7 @@ func (m *modelTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			selected := m.table.SelectedRow()
 			selectedId, _ := strconv.Atoi(selected[0])
-			m.dataPelanggan.setSelectedId(selectedId)
+			m.dataPelanggan.SetSelectedId(selectedId)
 			fmt.Println("\n\n\n >>> Kamu memilih", selected[1], "                       \n tunggu beberapa saat")
 			time.AfterFunc(3*time.Second, func() {
 				// do nothing
@@ -93,7 +93,8 @@ func (m *modelTable) View() string {
 		"4. Urut id menurun\n" +
 		"5. Tampilkan pelanggan aktif saja\n" +
 		"6. Tampilkan pelanggan non-aktif saja\n" +
-		"7. Tampilkan pelanggan semua status"
+		"7. Tampilkan pelanggan semua status\n" +
+		"0. Untuk kembali\n"
 }
 
 func viewAllTable(dp *ModelPelanggan) {

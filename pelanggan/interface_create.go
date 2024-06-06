@@ -20,7 +20,7 @@ func create_form() (bool, Pelanggan) {
 
 			huh.NewInput().
 				Title("Alamat").
-				Description("Tempat pengiriman ke pelanggan").
+				Description("Tempat tinggal pelanggan").
 				Placeholder("Cth: Jl. Radio Palasari No 34 Gg. ABC").
 				Value(&alamat),
 
@@ -100,7 +100,7 @@ func update_form(p *Pelanggan) {
 
 			huh.NewInput().
 				Title("Alamat").
-				Description("Tempat pengiriman ke pelanggan").
+				Description("Tempat tinggal pelanggan").
 				Placeholder(p.alamat).
 				Value(&alamat),
 
@@ -162,4 +162,51 @@ func update_form(p *Pelanggan) {
 
 		p.status = status
 	}
+}
+
+func confirm_form() bool {
+	var confirm bool
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title("\n\nKonfirmasi Hapus Pelanggan?").
+				Description("Data ekspedisi akan tetap tersedia untuk pelanggan ini. ").
+				Value(&confirm).
+				Affirmative("Yes!").
+				Negative("No."),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		//fmt.Println("error in pelanggan's create form:", err)
+		return false
+	}
+
+	return confirm
+}
+
+func search_form() (bool, string) {
+	var nama, id string
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewNote().Title("Cari data pasien").Description("Silahkan isi salah satu, nama lebih diutamakan"),
+			huh.NewInput().Title("Cari denang nama").Value(&nama),
+			huh.NewInput().Title("Cari denang id").Value(&id),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		//fmt.Println("error in pelanggan's create form:", err)
+		return true, "cancelled"
+	}
+
+	if strings.TrimSpace(nama) != "" {
+		return true, strings.TrimSpace(nama)
+	} else if strings.TrimSpace(id) != "" {
+		return false, strings.TrimSpace(id)
+	}
+
+	return true, "cancelled"
 }

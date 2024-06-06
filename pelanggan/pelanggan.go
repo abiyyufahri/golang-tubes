@@ -35,7 +35,7 @@ func (p *ModelPelanggan) Init() {
 
 func (p *ModelPelanggan) Create() {
 	/*
-		Membuat data pelanggan baru, return false bila data telah penuh
+		Membuat data pelanggan baru, dengan libary form
 	*/
 
 	if p.nPelanggan < NMAXPELANGGAN {
@@ -66,7 +66,7 @@ func (p *ModelPelanggan) ReadAll() {
 	viewAllTable(p)
 }
 
-func (p *ModelPelanggan) setSelectedId(selectedId int) {
+func (p *ModelPelanggan) SetSelectedId(selectedId int) {
 	/*
 		mennganti id yang terpilih
 	*/
@@ -77,8 +77,8 @@ func (p *ModelPelanggan) GetSelectedName() string {
 		Mengembalikan nama yang terpilih menggunakan
 	*/
 
-	if p.selectedId != -1 && p.searchById() != -1 {
-		var idx = p.searchById()
+	if p.selectedId != -1 && p.searchBySelectedId() != -1 {
+		var idx = p.searchBySelectedId()
 		return p.daftarPelanggan[idx].nama
 	}
 	return ""
@@ -91,7 +91,7 @@ func (p *ModelPelanggan) Read() {
 		false: "Nonaktif",
 	}
 
-	var idx = p.searchById()
+	var idx = p.searchBySelectedId()
 
 	var content string
 	if idx != -1 {
@@ -115,8 +115,8 @@ func (p *ModelPelanggan) Update() {
 	*/
 
 	var idx int
-	if p.selectedId != -1 && p.searchById() != -1 {
-		idx = p.searchById()
+	if p.selectedId != -1 && p.searchBySelectedId() != -1 {
+		idx = p.searchBySelectedId()
 		update_form(&p.daftarPelanggan[idx])
 	} else {
 		var content = " Data tidak ditemukan, harap keep seorang pelanggan dari daftar pelanggan"
@@ -165,21 +165,26 @@ func (p *ModelPelanggan) SearchById(id int) int {
 	return -1 // jika tidak ditemukan
 }
 
-func (p *ModelPelanggan) Delete(id int) bool {
-	/*
-		Menghapus data berdasarkan id, return false bila id tidak ditemukan
-	*/
+func (p *ModelPelanggan) Delete() {
 	var idx int
-	idx = p.SearchById(id)
+	if p.selectedId != -1 && p.searchBySelectedId() != -1 {
+		idx = p.searchBySelectedId()
+		if confirm_form() {
 
-	if idx == -1 {
-		return false // jika id tidak ditemukan
-	}
+			// Geser semua elemen setelah idx ke kiri
+			for i := idx; i < p.nPelanggan-1; i++ {
+				p.daftarPelanggan[i] = p.daftarPelanggan[i+1]
+			}
+			// Kosongkan elemen terakhir
+			p.daftarPelanggan[p.nPelanggan-1] = Pelanggan{}
 
-	for i := id; i < p.nPelanggan-1; i++ {
-		p.daftarPelanggan[i] = p.daftarPelanggan[i+1]
+			// Kurangi jumlah elemen
+			p.nPelanggan--
+		}
+	} else {
+		var content = " Data tidak ditemukan, harap keep sebuah ekspedisi dari daftar pelanggan"
+		show_pager(content)
 	}
-	return true
 }
 
 // sorting pelanggan
@@ -220,7 +225,7 @@ func (p *ModelPelanggan) SortByIdAscending() {
 	}
 }
 
-func (p *ModelPelanggan) sortByNameDescending() {
+func (p *ModelPelanggan) SortByNameDescending() {
 	/*
 		Mengurutkan p.daftarPelanggan berdasarkan nama pelanggan secara descending
 		dengan menggunakan insertion sort
@@ -258,7 +263,7 @@ func (p *ModelPelanggan) SortByNameAscending() {
 }
 
 // filter
-func (p *ModelPelanggan) filterByActive() ModelPelanggan {
+func (p *ModelPelanggan) FilterByActive() ModelPelanggan {
 	/*
 		Mengembalikan model pelanggan dengan daftarpelanggan
 		yang berstatus aktif saja
@@ -279,7 +284,7 @@ func (p *ModelPelanggan) filterByActive() ModelPelanggan {
 	return pelangganActive
 }
 
-func (p *ModelPelanggan) filterByNonActive() ModelPelanggan {
+func (p *ModelPelanggan) FilterByNonActive() ModelPelanggan {
 	/*
 		Mengembalikan model pelanggan dengan daftarpelanggan
 		yang berstatus non-active saja
@@ -301,12 +306,14 @@ func (p *ModelPelanggan) filterByNonActive() ModelPelanggan {
 }
 
 // search
-func (p *ModelPelanggan) searchById() int {
+func (p *ModelPelanggan) searchBySelectedId() int {
 	/*
 		Mengembalikan nilai index elemen dari p.daftarPelanggan
 		saat elemen.id = selectedId
 		Pencarian menggunakan binary search
 	*/
+
+	//p.SortByIdAscending() // mengurutkan data sebelum binary search
 	low, high := 0, p.nPelanggan-1
 	for low <= high {
 		mid := (low + high) / 2
@@ -321,6 +328,68 @@ func (p *ModelPelanggan) searchById() int {
 	return -1
 }
 
+func (p *ModelPelanggan) getIdFromName(name string) int {
+	/*
+		mengembalikan nilai id dari p.daftarPelanggan[i].nama == name
+		menggunakan sequential search
+	*/
+
+	for i := 0; i < p.nPelanggan; i++ {
+		if p.daftarPelanggan[i].nama == name {
+			return p.daftarPelanggan[i].id
+
+		}
+	}
+
+	return -1
+}
+
+func (p *ModelPelanggan) Search() {
+	var search string
+	var isString bool
+	isString, search = search_form()
+
+	var id int
+
+	if search != "cancelled" {
+
+		if isString && p.getIdFromName(search) != -1 {
+			id = p.getIdFromName(search)
+			p.SetSelectedId(id)
+		} else if !isString {
+			idInt, _ := strconv.Atoi(search)
+
+			if p.SearchById(idInt) != -1 {
+				p.SetSelectedId(idInt)
+			}
+		}
+		p.Read()
+		return
+	}
+}
+
+// getter
 func (p *ModelPelanggan) GetAll() ModelPelanggan {
 	return *p
+}
+
+func (p *ModelPelanggan) GetNamaById(id int) string {
+	// mendapatkan nama pelanggan berdasarkan id menggunakan sequential Search
+	for i := 0; i < p.nPelanggan; i++ {
+		if p.daftarPelanggan[i].id == id {
+			return p.daftarPelanggan[i].nama
+		}
+	}
+	//fmt.Println(id)
+	//os.Exit(1)
+	return "Not Found"
+}
+
+func (p *ModelPelanggan) GetAlamat(id int) string {
+	var idx int
+	if p.SearchById(id) != -1 {
+		idx = p.SearchById(id)
+		return p.daftarPelanggan[idx].alamat
+	}
+	return "Not Found"
 }

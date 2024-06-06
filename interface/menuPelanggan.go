@@ -19,9 +19,10 @@ func initialModelMenuPelanggan(name string) modelMenuPelanggan {
 			choices: []string{
 				"Tambah Pelanggan",
 				"Lihat Daftar Pelanggan",
+				"Cari Data Pelanggan",
 				"Lihat Detail << " + name + " >> ",
 				"Ubah Data << " + name + " >> ",
-				"Hapus Pelanggan",
+				"Hapus << " + name + " >> ",
 			},
 		}
 	}
@@ -32,6 +33,7 @@ func initialModelMenuPelanggan(name string) modelMenuPelanggan {
 		choices: []string{
 			"Tambah Pelanggan",
 			"Lihat Daftar Pelanggan",
+			"Cari Data Pelanggan",
 			"Lihat Detail Pelanggan",
 			"Ubah Data Pelanggan",
 			"Hapus Pelanggan",
@@ -59,7 +61,7 @@ func (m modelMenuPelanggan) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.choosen = 0
 			return m, tea.Quit
 
-		case "1", "2", "3", "4": // jika pilihan nya 1 atau 2 atau seterusnya
+		case "1", "2", "3", "4", "5", "6": // jika pilihan nya 1 atau 2 atau seterusnya
 			m.choosen, _ = strconv.Atoi(msg.String())
 			return m, tea.Quit
 		}
@@ -73,7 +75,7 @@ func (m modelMenuPelanggan) View() string {
 	s := "\n\n==++ Modul Ekspedisi ++== \n\n"
 
 	// Iterate over our choices
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 6; i++ {
 		// Render the row
 		s += fmt.Sprintf("%d. %s\n", i+1, m.choices[i])
 	}
